@@ -622,8 +622,91 @@ export default function Index() {
           </div>
         )}
 
+        {/* ===== СОТРУДНИКИ ===== */}
+        {activeTab === "staff" && (
+          <div className="space-y-4 animate-fade-in">
+            <div>
+              <h2 className="font-semibold text-sm mb-1" style={{ color: "var(--text-primary)" }}>Сотрудники</h2>
+              <p className="text-xs mb-3" style={{ color: "var(--text-muted)" }}>Логин и пароль берутся из общей базы сотрудников.</p>
+              <button
+                className="flex items-center gap-2 px-4 py-2 rounded text-xs font-semibold"
+                style={{ background: "var(--accent-green)", color: "#fff" }}
+              >
+                <Icon name="UserPlus" size={14} />
+                ДОБАВИТЬ СОТРУДНИКА
+              </button>
+            </div>
+
+            <div
+              className="rounded-lg overflow-hidden"
+              style={{ border: "1px solid var(--border-primary)", background: "var(--bg-card)" }}
+            >
+              <table className="w-full text-xs">
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--border-primary)" }}>
+                    {["СОТРУДНИК", "ЛОГИН", "РОЛЬ", "СОЗДАНО", "ДЕЙСТВИЯ"].map((col) => (
+                      <th
+                        key={col}
+                        className="px-4 py-3 text-left font-semibold"
+                        style={{ color: "var(--text-muted)", letterSpacing: "0.07em", fontSize: "10px" }}
+                      >
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { name: "Пущин Тимофей Андреевич", login: "пущин.тимофей", role: "Упаковщик", created: "26.03.2026" },
+                    { name: "Коньшина Ольга Викторовна", login: "коньшина.ольга", role: "Упаковщик", created: "18.03.2026" },
+                    { name: "Плешкова Татьяна Витальевна", login: "плешкова.татьяна", role: "Упаковщик", created: "18.03.2026" },
+                    { name: "Объедкова Дарья Юрьевна", login: "объедкова.дарья", role: "Упаковщик", created: "18.03.2026" },
+                    { name: "Владимирова Анжела Александровна", login: "владимирова.анжела", role: "Упаковщик", created: "18.03.2026" },
+                    { name: "Шатилова Дарья Борисовна", login: "шатилова.дарья", role: "Упаковщик", created: "18.03.2026" },
+                  ].map((emp, i, arr) => (
+                    <tr
+                      key={i}
+                      className="table-row-hover"
+                      style={{ borderBottom: i < arr.length - 1 ? "1px solid var(--border-primary)" : "none" }}
+                    >
+                      <td className="px-4 py-3.5">
+                        <span className="font-medium" style={{ color: "var(--text-primary)" }}>{emp.name}</span>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <span style={{ color: "var(--link-color)", fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px" }}>{emp.login}</span>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <span style={{ color: "var(--text-secondary)" }}>{emp.role}</span>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <span style={{ color: "var(--text-muted)", fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px" }}>{emp.created}</span>
+                      </td>
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center gap-2">
+                          <button
+                            className="px-3 py-1 rounded text-[10px] font-bold tracking-wide transition-all"
+                            style={{ background: "rgba(37,99,235,0.15)", color: "var(--accent-blue-light)", border: "1px solid rgba(37,99,235,0.4)" }}
+                          >
+                            СТАТИСТИКА
+                          </button>
+                          <button
+                            className="px-3 py-1 rounded text-[10px] font-bold tracking-wide transition-all"
+                            style={{ background: "rgba(220,38,38,0.15)", color: "var(--accent-red)", border: "1px solid rgba(220,38,38,0.4)" }}
+                          >
+                            УДАЛИТЬ
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* ===== НОВЫЕ (default) ===== */}
-        {activeTab !== "assembly" && activeTab !== "fbs" && activeTab !== "problems" && <>
+        {activeTab !== "assembly" && activeTab !== "fbs" && activeTab !== "problems" && activeTab !== "staff" && <>
 
         {/* ALERTS */}
         {showAlerts && (
