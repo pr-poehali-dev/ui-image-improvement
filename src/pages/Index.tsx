@@ -499,8 +499,131 @@ export default function Index() {
           </div>
         )}
 
+        {/* ===== ПРОБЛЕМЫ ОСТАТКОВ ===== */}
+        {activeTab === "problems" && (
+          <div className="space-y-4 animate-fade-in">
+            {/* Toolbar */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <button
+                  className="flex items-center gap-2 px-4 py-2 rounded text-xs font-semibold"
+                  style={{ background: "var(--accent-green)", color: "#fff" }}
+                >
+                  <Icon name="RotateCw" size={14} />
+                  ОБНОВИТЬ
+                </button>
+                <span className="text-xs" style={{ color: "var(--text-muted)", fontFamily: "'IBM Plex Mono', monospace" }}>
+                  Обновлено <span style={{ color: "var(--text-secondary)" }}>22:23:49</span>
+                </span>
+              </div>
+              <div className="flex items-center gap-2 text-[11px]">
+                <span className="px-2.5 py-1 rounded" style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border-primary)", color: "var(--text-secondary)" }}>
+                  ПОЛКА: <span style={{ color: "var(--accent-orange)", fontWeight: 700 }}>32</span>
+                </span>
+                <span className="px-2.5 py-1 rounded" style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border-primary)", color: "var(--text-secondary)" }}>
+                  СОТРУДНИК: <span style={{ color: "var(--accent-red)", fontWeight: 700 }}>24</span>
+                </span>
+                <span className="px-2.5 py-1 rounded" style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border-primary)", color: "var(--text-secondary)" }}>
+                  ОСТАТКИ: <span style={{ color: "var(--accent-blue-light)", fontWeight: 700 }}>15</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-lg p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--accent-orange)", borderLeft: "3px solid var(--accent-orange)" }}>
+                <div className="text-[10px] font-semibold tracking-widest mb-2" style={{ color: "var(--accent-orange)" }}>ПОЛКА УШЛА В МИНУС</div>
+                <div className="text-3xl font-bold mb-1" style={{ color: "var(--text-primary)" }}>32</div>
+                <div className="text-xs" style={{ color: "var(--text-muted)" }}>32 строк</div>
+              </div>
+              <div className="rounded-lg p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--accent-red)", borderLeft: "3px solid var(--accent-red)" }}>
+                <div className="text-[10px] font-semibold tracking-widest mb-2" style={{ color: "var(--accent-red)" }}>СОТРУДНИК СПИСАЛ В МИНУС</div>
+                <div className="text-3xl font-bold mb-1" style={{ color: "var(--text-primary)" }}>25</div>
+                <div className="text-xs" style={{ color: "var(--text-muted)" }}>24 строк</div>
+              </div>
+              <div className="rounded-lg p-4" style={{ background: "var(--bg-card)", border: "1px solid var(--accent-blue-light)", borderLeft: "3px solid var(--accent-blue-light)" }}>
+                <div className="text-[10px] font-semibold tracking-widest mb-2" style={{ color: "var(--accent-blue-light)" }}>ЛИШНИЙ ТОВАР НА РУКАХ</div>
+                <div className="text-3xl font-bold mb-1" style={{ color: "var(--text-primary)" }}>56</div>
+                <div className="text-xs" style={{ color: "var(--text-muted)" }}>15 строк</div>
+              </div>
+            </div>
+
+            {/* Section: ПОЛКА */}
+            <div className="rounded-lg overflow-hidden" style={{ border: "1px solid var(--border-primary)", background: "var(--bg-card)" }}>
+              <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--border-primary)", borderLeft: "3px solid var(--accent-orange)" }}>
+                <div className="text-[10px] font-semibold tracking-widest mb-1" style={{ color: "var(--accent-orange)" }}>ПОЛКА</div>
+                <div className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>С полки забрали, а остатка не было</div>
+                <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Показываем текущий незакрытый минус по полке с привязкой к сборка и сотруднику.</div>
+                <div className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>1</div>
+              </div>
+              {[{ name: "GraFLab, Комплекс витаминов, 60 капсул", article: "GRA-07780", rows: 32, minus: 32 }].map((item, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 px-4 py-3.5 table-row-hover cursor-pointer"
+                  style={{ borderTop: "1px solid var(--border-primary)" }}
+                >
+                  <Icon name="Plus" size={12} style={{ color: "var(--accent-orange)", flexShrink: 0 }} />
+                  <div className="flex-1">
+                    <div className="font-medium text-xs" style={{ color: "var(--text-primary)" }}>{item.name}</div>
+                    <div className="text-[11px] mt-0.5" style={{ color: "var(--text-muted)" }}>Артикул: <span style={{ color: "var(--accent-cyan)", fontFamily: "'IBM Plex Mono', monospace" }}>{item.article}</span></div>
+                  </div>
+                  <div className="flex items-stretch gap-0 rounded overflow-hidden" style={{ border: "1px solid var(--border-primary)" }}>
+                    <div className="px-4 py-2 text-center" style={{ background: "var(--bg-tertiary)", borderRight: "1px solid var(--border-primary)" }}>
+                      <div className="text-[9px] font-semibold tracking-wider mb-1" style={{ color: "var(--text-muted)" }}>СТРОК</div>
+                      <div className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>{item.rows}</div>
+                    </div>
+                    <div className="px-4 py-2 text-center" style={{ background: "rgba(217,119,6,0.1)" }}>
+                      <div className="text-[9px] font-semibold tracking-wider mb-1" style={{ color: "var(--accent-orange)" }}>МИНУС</div>
+                      <div className="font-bold text-sm" style={{ color: "var(--accent-orange)" }}>{item.minus}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Section: СОТРУДНИК */}
+            <div className="rounded-lg overflow-hidden" style={{ border: "1px solid var(--border-primary)", background: "var(--bg-card)" }}>
+              <div className="px-4 py-3" style={{ borderBottom: "1px solid var(--border-primary)", borderLeft: "3px solid var(--accent-red)" }}>
+                <div className="text-[10px] font-semibold tracking-widest mb-1" style={{ color: "var(--accent-red)" }}>СОТРУДНИК</div>
+                <div className="font-semibold text-sm" style={{ color: "var(--text-primary)" }}>Сотрудник списал заказ в минус</div>
+                <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>Здесь виден текущий незакрытый минус у сотрудника после сборки заказа в сборка.</div>
+                <div className="text-xs mt-1" style={{ color: "var(--text-secondary)" }}>9</div>
+              </div>
+              {[
+                { name: "GraFLab, Ресвератрол 200 мг, 3 банки по 60 капсул", article: "GRA-00230", rows: 2, minus: 2 },
+                { name: "GraFLab, Лактоферрин 500 мг, 3 банки по 60 капсул", article: "GRA-00240", rows: 2, minus: 2 },
+                { name: "GraFLab Таурин 600 мг, 60 капсул", article: "GRA-06983", rows: 2, minus: 2 },
+                { name: "GraFLab, Комплекс витаминов, 60 капсул", article: "GRA-07780", rows: 1, minus: 1 },
+                { name: "GraFLab Лактоферрин (lactoferrin) 60 капсул", article: "GRA-07800", rows: 1, minus: 1 },
+              ].map((item, i, arr) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-3 px-4 py-3.5 table-row-hover cursor-pointer"
+                  style={{ borderTop: "1px solid var(--border-primary)" }}
+                >
+                  <Icon name="Plus" size={12} style={{ color: "var(--accent-red)", flexShrink: 0 }} />
+                  <div className="flex-1">
+                    <div className="font-medium text-xs" style={{ color: "var(--text-primary)" }}>{item.name}</div>
+                    <div className="text-[11px] mt-0.5" style={{ color: "var(--text-muted)" }}>Артикул: <span style={{ color: "var(--accent-cyan)", fontFamily: "'IBM Plex Mono', monospace" }}>{item.article}</span></div>
+                  </div>
+                  <div className="flex items-stretch gap-0 rounded overflow-hidden" style={{ border: "1px solid var(--border-primary)" }}>
+                    <div className="px-4 py-2 text-center" style={{ background: "var(--bg-tertiary)", borderRight: "1px solid var(--border-primary)" }}>
+                      <div className="text-[9px] font-semibold tracking-wider mb-1" style={{ color: "var(--text-muted)" }}>СТРОК</div>
+                      <div className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>{item.rows}</div>
+                    </div>
+                    <div className="px-4 py-2 text-center" style={{ background: "rgba(220,38,38,0.1)" }}>
+                      <div className="text-[9px] font-semibold tracking-wider mb-1" style={{ color: "var(--accent-red)" }}>МИНУС</div>
+                      <div className="font-bold text-sm" style={{ color: "var(--accent-red)" }}>{item.minus}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ===== НОВЫЕ (default) ===== */}
-        {activeTab !== "assembly" && activeTab !== "fbs" && <>
+        {activeTab !== "assembly" && activeTab !== "fbs" && activeTab !== "problems" && <>
 
         {/* ALERTS */}
         {showAlerts && (
