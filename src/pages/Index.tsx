@@ -66,6 +66,25 @@ const TABS: Tab[] = [
   { id: "settings", label: "НАСТРОЙКИ", count: null, icon: "Settings" },
 ];
 
+interface Assembly {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  store: string;
+  access: string;
+  total: number;
+  done: number;
+  shipped: boolean;
+}
+
+const ASSEMBLIES: Assembly[] = [
+  { id: "1", title: "Сборка Ozon", date: "26.03", time: "16:00", store: "ИП Ирина", access: "СКРЫТА", total: 96, done: 0, shipped: false },
+  { id: "2", title: "Сборка Ozon", date: "26.03", time: "09:19", store: "ИП Ирина", access: "СКРЫТА", total: 204, done: 0, shipped: false },
+  { id: "3", title: "Сборка Ozon", date: "25.03", time: "12:06", store: "ИП Ирина", access: "СКРЫТА", total: 135, done: 135, shipped: true },
+  { id: "4", title: "Сборка Ozon", date: "25.03", time: "07:00", store: "ИП Ирина", access: "СКРЫТА", total: 232, done: 0, shipped: false },
+];
+
 const ALERTS = [
   {
     type: "critical",
@@ -211,6 +230,126 @@ export default function Index() {
 
       {/* MAIN CONTENT */}
       <main className="flex-1 p-5 space-y-4 animate-fade-in overflow-auto">
+
+        {/* ===== НА СБОРКЕ ===== */}
+        {activeTab === "assembly" && (
+          <div className="space-y-4">
+            {/* Toolbar */}
+            <div className="flex items-center gap-2">
+              <button
+                className="flex items-center gap-2 px-4 py-2 rounded text-xs font-semibold transition-all"
+                style={{ background: "var(--accent-blue)", color: "#fff" }}
+              >
+                <Icon name="Send" size={14} />
+                ОТПРАВИТЬ В СБОРКУ
+              </button>
+              <button
+                className="flex items-center gap-2 px-4 py-2 rounded text-xs font-semibold transition-all"
+                style={{ background: "var(--bg-card)", color: "var(--text-primary)", border: "1px solid var(--border-primary)" }}
+              >
+                <Icon name="RefreshCw" size={14} />
+                СИНХР. И ЭТИКЕТКИ
+              </button>
+              <button
+                className="flex items-center gap-2 px-4 py-2 rounded text-xs font-semibold transition-all"
+                style={{ background: "var(--bg-card)", color: "var(--text-primary)", border: "1px solid var(--border-primary)" }}
+              >
+                <Icon name="RotateCw" size={14} />
+                ОБНОВИТЬ
+              </button>
+            </div>
+
+            {/* Assembly Table */}
+            <div
+              className="rounded-lg overflow-hidden"
+              style={{ border: "1px solid var(--border-primary)", background: "var(--bg-card)" }}
+            >
+              <table className="w-full text-xs">
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--border-primary)" }}>
+                    <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-muted)", letterSpacing: "0.07em", fontSize: "10px" }}>
+                      СБОРКА
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold" style={{ color: "var(--text-muted)", letterSpacing: "0.07em", fontSize: "10px" }}>
+                      ДОСТУП
+                    </th>
+                    <th className="px-4 py-3 text-right font-semibold" style={{ color: "var(--text-muted)", letterSpacing: "0.07em", fontSize: "10px" }}>
+                      ЗАКАЗЫ
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ASSEMBLIES.map((a, i) => (
+                    <tr
+                      key={a.id}
+                      className="table-row-hover cursor-pointer"
+                      style={{ borderBottom: i < ASSEMBLIES.length - 1 ? "1px solid var(--border-primary)" : "none" }}
+                    >
+                      <td className="px-4 py-4">
+                        <div className="space-y-1">
+                          <div className="font-medium" style={{ color: "var(--text-primary)" }}>
+                            {a.title} {a.date} {a.time} · <span style={{ color: "var(--text-secondary)" }}>{a.total} заказов</span>
+                          </div>
+                          <div className="text-[11px]" style={{ color: "var(--text-secondary)" }}>{a.store}</div>
+                          <div>
+                            <span
+                              className="text-[10px] font-bold tracking-wider"
+                              style={{ color: a.shipped ? "var(--accent-green-light)" : "var(--accent-blue-light)" }}
+                            >
+                              {a.shipped ? "СОБРАНА" : "СБОРКА"}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span
+                          className="px-2.5 py-1 rounded text-[10px] font-semibold"
+                          style={{ background: "var(--bg-tertiary)", color: "var(--text-muted)", border: "1px solid var(--border-primary)" }}
+                        >
+                          {a.access}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-right">
+                        {a.shipped ? (
+                          <span className="font-semibold text-xs" style={{ color: "var(--accent-green-light)" }}>
+                            {a.done} отгружено
+                          </span>
+                        ) : (
+                          <div className="flex flex-col items-end gap-1">
+                            <span className="font-semibold text-xs" style={{ color: "var(--text-primary)" }}>
+                              {a.done} / {a.total}
+                            </span>
+                            <div className="w-24 h-1 rounded-full overflow-hidden" style={{ background: "var(--bg-tertiary)" }}>
+                              <div
+                                className="h-full rounded-full transition-all"
+                                style={{
+                                  width: `${a.total > 0 ? (a.done / a.total) * 100 : 0}%`,
+                                  background: "var(--accent-blue-light)",
+                                }}
+                              />
+                            </div>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                {ASSEMBLIES.length} сборки · {ASSEMBLIES.filter(a => a.shipped).length} завершены
+              </span>
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                Всего заказов: {ASSEMBLIES.reduce((s, a) => s + a.total, 0)}
+              </span>
+            </div>
+          </div>
+        )}
+
+        {/* ===== НОВЫЕ (default) ===== */}
+        {activeTab !== "assembly" && <>
 
         {/* ALERTS */}
         {showAlerts && (
@@ -425,6 +564,7 @@ export default function Index() {
             Сборка FBS · Обновлено только что
           </span>
         </div>
+        </>}
       </main>
 
       {/* FOOTER STATUS BAR */}
