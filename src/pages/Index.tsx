@@ -705,8 +705,49 @@ export default function Index() {
           </div>
         )}
 
+        {/* ===== НАСТРОЙКИ ===== */}
+        {activeTab === "settings" && (
+          <div className="space-y-4 animate-fade-in">
+            <div>
+              <h2 className="font-semibold text-sm mb-1" style={{ color: "var(--text-primary)" }}>Настройки</h2>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>Ошибки сборки от сотрудников.</p>
+            </div>
+
+            <div
+              className="rounded-lg overflow-hidden"
+              style={{ border: "1px solid var(--border-primary)", background: "var(--bg-card)" }}
+            >
+              <table className="w-full text-xs">
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--border-primary)" }}>
+                    {["СОТРУДНИК", "СБОРКА", "ТОВАР", "БАРКОД", "СОЗДАНО", "ДЕЙСТВИЯ"].map((col) => (
+                      <th
+                        key={col}
+                        className="px-4 py-3 text-left font-semibold"
+                        style={{ color: "var(--text-muted)", letterSpacing: "0.07em", fontSize: "10px" }}
+                      >
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td colSpan={6} className="px-4 py-12 text-center">
+                      <div className="flex flex-col items-center gap-2">
+                        <Icon name="CheckCircle" size={28} style={{ color: "var(--accent-green-light)" }} />
+                        <span style={{ color: "var(--text-muted)" }}>Нет ошибок</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
         {/* ===== НОВЫЕ (default) ===== */}
-        {activeTab !== "assembly" && activeTab !== "fbs" && activeTab !== "problems" && activeTab !== "staff" && <>
+        {activeTab !== "assembly" && activeTab !== "fbs" && activeTab !== "problems" && activeTab !== "staff" && activeTab !== "settings" && <>
 
         {/* ALERTS */}
         {showAlerts && (
