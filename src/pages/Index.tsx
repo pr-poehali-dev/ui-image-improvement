@@ -85,6 +85,36 @@ const ASSEMBLIES: Assembly[] = [
   { id: "4", title: "Сборка Ozon", date: "25.03", time: "07:00", store: "ИП Ирина", access: "СКРЫТА", total: 232, done: 0, shipped: false },
 ];
 
+interface FbsItem {
+  id: string;
+  name: string;
+  ozonIds: string[];
+  sku: string;
+  article: string;
+  needed: number;
+  stock: number;
+  cell: string;
+  status: "ok" | "deficit" | "error";
+}
+
+const FBS_ITEMS: FbsItem[] = [
+  { id: "1", name: "GraFLab, Берберин New (с пиколинатом хрома) 3 банки по 60 капсул", ozonIds: ["OZN3010900392", "OZN3551548188"], sku: "5010908392, 3551548188", article: "GRA-08760", needed: 15, stock: 52, cell: "С12П1", status: "ok" },
+  { id: "2", name: "GRAFLAB Коллаген АП", ozonIds: ["OZN1667924397"], sku: "2100067921", article: "GRA-11600, GRA-11601", needed: 8, stock: 119, cell: "С5П1", status: "ok" },
+  { id: "3", name: "GraFLab, Коллаген UP С Биотином, 60 капсул", ozonIds: ["OZN1448414691"], sku: "2100067998", article: "GRA-00010", needed: 5, stock: 32, cell: "С5П4", status: "ok" },
+  { id: "4", name: "GraFLab, Альфа-Липоевая кислота, 100мг, 60 капсул", ozonIds: ["OZN5474457467"], sku: "3474457467", article: "GRA-08350, GRA-08351", needed: 4, stock: 20, cell: "С2П3", status: "ok" },
+  { id: "5", name: "Монолаурин 500 мг 60 капсул", ozonIds: ["OZN1256012544"], sku: "2120293586", article: "GRA-08300", needed: 3, stock: 26, cell: "С8П2", status: "ok" },
+  { id: "6", name: "GraFLab, Лютеин 2 банки по 60 капсул", ozonIds: ["OZN3551592961"], sku: "3551592961", article: "GRA-08520", needed: 3, stock: 43, cell: "С12П1", status: "ok" },
+  { id: "7", name: "GraFLab, Spermidine, 60 капсул", ozonIds: ["OZN3851868572"], sku: "3551606572", article: "GRA-08380", needed: 3, stock: 72, cell: "С10П4", status: "ok" },
+  { id: "8", name: "GraFLab, Набор Монолаурин + Кверцетин 2 банки по 60 капсул", ozonIds: ["OZN3651598146"], sku: "3681590146", article: "GRA-04400, GRA-04401", needed: 2, stock: 22, cell: "С12П1", status: "ok" },
+  { id: "9", name: "GraFLab, Тримаг, TRIMAG NEURO-BALANCE, 60 капсул", ozonIds: ["OZN2795661680", "OZN3551595652"], sku: "2795661680, 3551595652", article: "GRA-08240", needed: 2, stock: 76, cell: "С10П2", status: "ok" },
+  { id: "10", name: "GraFLab, Холин 2 банки по 60 капсул", ozonIds: ["OZN2857533643", "OZN3581594083"], sku: "2857533543, 3551594083", article: "GRA-08490", needed: 2, stock: 49, cell: "С12П1", status: "ok" },
+  { id: "11", name: "GraFLab, Цинк Пиколинат, 60 капсул", ozonIds: ["OZN2795779844", "OZN3661594726"], sku: "2796779844, 3681594726", article: "GRA-08320", needed: 2, stock: 74, cell: "С11П2", status: "ok" },
+  { id: "12", name: "GraFLab Инозитон + Холин , 60 капсул", ozonIds: ["OZN1312163683"], sku: "2100069070", article: "GRA-08200", needed: 1, stock: 42, cell: "С4П3", status: "ok" },
+  { id: "13", name: "GraFLab Лактоферрин (lactoferrin) 60 капсул", ozonIds: ["OZN3651543705"], sku: "3651543705", article: "GRA-07800, GRA-07804", needed: 1, stock: 263, cell: "С6П2 (100), С7П1 (163)", status: "ok" },
+  { id: "14", name: "GRAFLAB Метилкобаламин (витамин B12) 60 капсул", ozonIds: ["OZN3456907085"], sku: "3556907085", article: "GRA-08400, GRA-08402", needed: 1, stock: 253, cell: "С2П3", status: "ok" },
+  { id: "15", name: "GraFLab Холин (Choline) в капсулах Витамин B4 60 штук", ozonIds: ["OZN1234567890"], sku: "9876543210", article: "GRA-09000, GRA-09002", needed: 1, stock: 32, cell: "С11П2", status: "ok" },
+];
+
 const ALERTS = [
   {
     type: "critical",
@@ -348,8 +378,129 @@ export default function Index() {
           </div>
         )}
 
+        {/* ===== ПРОВЕРКА ОСТАТКОВ ФБС ===== */}
+        {activeTab === "fbs" && (
+          <div className="space-y-4 animate-fade-in">
+            {/* Toolbar */}
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <button
+                  className="flex items-center gap-2 px-4 py-2 rounded text-xs font-semibold"
+                  style={{ background: "var(--accent-green)", color: "#fff" }}
+                >
+                  <Icon name="RotateCw" size={14} />
+                  ОБНОВИТЬ
+                </button>
+                <div className="flex items-center gap-2 text-xs" style={{ color: "var(--text-secondary)" }}>
+                  <Icon name="Warehouse" size={13} style={{ color: "var(--text-muted)" }} />
+                  Склад: <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>Ижевск FBS</span>
+                  <span style={{ color: "var(--border-accent)" }}>·</span>
+                  <span style={{ color: "var(--text-muted)", fontFamily: "'IBM Plex Mono', monospace" }}>17:52:21</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-[11px]" style={{ color: "var(--text-secondary)" }}>
+                <span className="px-2.5 py-1 rounded" style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border-primary)" }}>
+                  ВСЕГО: <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>38</span>
+                </span>
+                <span className="px-2.5 py-1 rounded" style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border-primary)" }}>
+                  ОК: <span style={{ color: "var(--accent-green-light)", fontWeight: 600 }}>38</span>
+                </span>
+                <span className="px-2.5 py-1 rounded" style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border-primary)" }}>
+                  ДЕФИЦИТ: <span style={{ color: "var(--accent-orange)", fontWeight: 600 }}>0</span>
+                </span>
+                <span className="px-2.5 py-1 rounded" style={{ background: "var(--bg-tertiary)", border: "1px solid var(--border-primary)" }}>
+                  ОШИБКИ: <span style={{ color: "var(--accent-red)", fontWeight: 600 }}>0</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Table */}
+            <div
+              className="rounded-lg overflow-hidden"
+              style={{ border: "1px solid var(--border-primary)", background: "var(--bg-card)" }}
+            >
+              <table className="w-full text-xs">
+                <thead>
+                  <tr style={{ borderBottom: "1px solid var(--border-primary)" }}>
+                    {["НАЗВАНИЕ", "АРТИКУЛ", "НУЖНО", "ОСТАТОК", "ЯЧЕЙКА", "СТАТУС"].map((col) => (
+                      <th
+                        key={col}
+                        className="px-3 py-3 text-left font-semibold"
+                        style={{ color: "var(--text-muted)", letterSpacing: "0.07em", fontSize: "10px" }}
+                      >
+                        {col}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {FBS_ITEMS.map((item, i) => (
+                    <tr
+                      key={item.id}
+                      className="table-row-hover cursor-pointer"
+                      style={{ borderBottom: i < FBS_ITEMS.length - 1 ? "1px solid var(--border-primary)" : "none" }}
+                    >
+                      <td className="px-3 py-3">
+                        <div className="space-y-0.5">
+                          <div className="font-medium" style={{ color: "var(--text-primary)", lineHeight: 1.4 }}>{item.name}</div>
+                          <div style={{ color: "var(--link-color)", fontSize: "10px" }}>
+                            {item.ozonIds.map((o, idx) => (
+                              <span key={idx}>{idx > 0 && ", "}{o}</span>
+                            ))}
+                          </div>
+                          <div style={{ color: "var(--text-muted)", fontSize: "10px", fontFamily: "'IBM Plex Mono', monospace" }}>
+                            SKU: {item.sku}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-3 py-3 whitespace-nowrap">
+                        <span style={{ color: "var(--accent-cyan)", fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px" }}>
+                          {item.article}
+                        </span>
+                      </td>
+                      <td className="px-3 py-3 text-center">
+                        <span className="font-semibold" style={{ color: "var(--text-primary)" }}>{item.needed}</span>
+                      </td>
+                      <td className="px-3 py-3 text-center">
+                        <span
+                          className="font-semibold"
+                          style={{ color: item.stock < item.needed * 2 ? "var(--accent-orange)" : "var(--text-primary)" }}
+                        >
+                          {item.stock}
+                        </span>
+                      </td>
+                      <td className="px-3 py-3 whitespace-nowrap">
+                        <span style={{ color: "var(--text-secondary)", fontFamily: "'IBM Plex Mono', monospace", fontSize: "11px" }}>
+                          {item.cell}
+                        </span>
+                      </td>
+                      <td className="px-3 py-3">
+                        <span
+                          className="font-bold text-[11px] tracking-wide"
+                          style={{ color: item.status === "ok" ? "var(--accent-green-light)" : item.status === "deficit" ? "var(--accent-orange)" : "var(--accent-red)" }}
+                        >
+                          {item.status === "ok" ? "OK" : item.status === "deficit" ? "ДЕФИЦИТ" : "ОШИБКА"}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                Позиций: {FBS_ITEMS.length}
+              </span>
+              <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                Нужно отобрать: {FBS_ITEMS.reduce((s, x) => s + x.needed, 0)} ед.
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* ===== НОВЫЕ (default) ===== */}
-        {activeTab !== "assembly" && <>
+        {activeTab !== "assembly" && activeTab !== "fbs" && <>
 
         {/* ALERTS */}
         {showAlerts && (
